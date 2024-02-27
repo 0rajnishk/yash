@@ -1,0 +1,34 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch: # Allows manual triggering from Actions tab
+
+permissions: # Permissions required for deployment
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency: # Controls concurrency to prevent multiple concurrent deployments
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: npm install && npm run build # Replace with your build commands
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build # Path to your built assets
